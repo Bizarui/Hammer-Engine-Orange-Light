@@ -1,30 +1,23 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
+using System;
 using System.Diagnostics;
-using System.Timers;
 
 public class Game : GameWindow
 {
-    Shader shader;
+    private Shader shader;
 
-    private Stopwatch timer = Stopwatch.StartNew();
+    private int VertexBufferObject;
+    private int VertexArrayObject;
 
-    int VertexBufferObject;
-    int VertexArrayObject;
-    int ElementBufferObject;
-
+    // Массив вершин для ОДНОГО красивого цветного треугольника
     private readonly float[] vertices =
-   {
-      // positions        // colors
-      0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // bottom right
-     -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // bottom left
-      0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f    // top 
-    };
-
-    uint[] indices = {  // Внимание: индексация точек начинается с 0!
-    0, 1, 3,   // Первый треугольник: верхний-правый -> нижний-правый -> верхний-левый
-    1, 2, 3    // Второй треугольник: нижний-правый -> нижний-левый -> верхний-левый
+    {
+      // Координаты (X, Y, Z) | Цвета (R, G, B)
+       0.5f, -0.5f, 0.0f,       1.0f, 0.0f, 0.0f,   // Нижний правый угол (Красный)
+      -0.5f, -0.5f, 0.0f,       0.0f, 1.0f, 0.0f,   // Нижний левый угол  (Зелёный)
+       0.0f,  0.5f, 0.0f,       0.0f, 0.0f, 1.0f    // Верхний угол       (Синий)
     };
 
     public Game(int width, int height, string title)
@@ -44,31 +37,28 @@ public class Game : GameWindow
 
         shader = new Shader("Shaders/shader.vert", "Shaders/shader.frag");
 
+        // Твой красивый тёмно-зелёный цвет фона
         GL.ClearColor(0.3f, 0.4f, 0.3f, 1.0f);
 
-        // VAO
+        // 1. Создаем и активируем VAO
         VertexArrayObject = GL.GenVertexArray();
         GL.BindVertexArray(VertexArrayObject);
 
-        // VBO
+        // 2. Создаем VBO и загружаем в него массив vertices
         VertexBufferObject = GL.GenBuffer();
         GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferObject);
         GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
 
+        // 3. Атрибут №0: Координаты (X, Y, Z). Шаг 6 float, смещение 0.
         GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), 0);
         GL.EnableVertexAttribArray(0);
 
+        // 4. Атрибут №1: Цвета (R, G, B). Шаг 6 float, смещение 3 float (пропускаем координаты).
         GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), 3 * sizeof(float));
         GL.EnableVertexAttribArray(1);
 
-        // Настраиваем указатели атрибутов для активного VBO
-        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
-        GL.EnableVertexAttribArray(0);
-
-        // EBO
-        ElementBufferObject = GL.GenBuffer();
-        GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementBufferObject);
-        GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
+        // Отвязываем VAO для безопасности, его настройка завершена
+        GL.BindVertexArray(0);
     }
 
     protected override void OnRenderFrame(FrameEventArgs e)
@@ -78,22 +68,27 @@ public class Game : GameWindow
         // Очищаем экран фоновым цветом
         GL.Clear(ClearBufferMask.ColorBufferBit);
 
-        // Включаем шейдер
+        // Включаем шейдерную программу
         shader.Use();
 
-        // Подключаем наш настроенный квадрат
+        // Подключаем наш настроенный VAO перед отрисовкой
         GL.BindVertexArray(VertexArrayObject);
 
-        // Отрисовка КВАДРАТА по индексам из EBO
-        GL.DrawElements(PrimitiveType.Triangles, indices.Length, DrawElementsType.UnsignedInt, 0);
+        // Рисуем треугольник: начинаем с 0-й вершины, всего берём 3 вершины
+        GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
 
-        // Выводим кадр на экран
+        // Выводим готовый кадр на экран
         SwapBuffers();
     }
 
     protected override void OnUnload()
     {
+        base.OnUnload();
+
+        // Освобождаем ресурсы видеокарты, чтобы не было утечек памяти
+        GL.DeleteBuffer(VertexBufferObject);
+        GL.DeleteVertexArray(VertexArrayObject);
+
         shader.Dispose();
     }
 }
-
