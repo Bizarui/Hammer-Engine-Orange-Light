@@ -29,10 +29,10 @@ public class Game : GameWindow
         GL.ClearColor(0.3f, 0.4f, 0.3f, 1.0f);
 
         mySquare = new AFG2D(
-            new Vector3(0.5f, 0.5f, 0.0f),  // 0: Верхний правый угол
-            new Vector3(0.5f, -0.5f, 0.0f),  // 1: Нижний правый угол
-            new Vector3(-0.5f, -0.5f, 0.0f),  // 2: Нижний левый угол
-            new Vector3(-0.5f, 0.5f, 0.0f)   // 3: Верхний левый угол
+            new Vector3(0.5f, 0.5f, 0.0f),
+            new Vector3(0.5f, -0.5f, 0.0f),
+            new Vector3(-0.5f, -0.5f, 0.0f),
+            new Vector3(-0.5f, 0.5f, 0.0f)
         );
 
     }

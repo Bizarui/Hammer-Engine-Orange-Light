@@ -13,30 +13,51 @@ public class AFG2D  // automatic figure generation 2D
     private int VertexArrayObject;
     private int ElementBufferObject;
 
-    private Vector3[] _points = new Vector3[4];
+    private Vector3[] _points;
+    private uint[] _indices;
 
-    uint[] indices = {
-    0, 1, 3,   // first triangle
-    1, 2, 3    // second triangle
-    };
+    public AFG2D(Vector3 point1, Vector3 point2, Vector3 point3)
+    {
+        _points = new Vector3[]
+        {
+            point1,
+            point2,
+            point3
+        };
+        
+        _indices = new uint[]
+        {
+            0, 1, 2
+        };
+
+        InitBuffers();
+    }
 
     public AFG2D (Vector3 point1, Vector3 point2, Vector3 point3, Vector3 point4)
     {
-        _points[0] = point1;
-        _points[1] = point2;
-        _points[2] = point3;
-        _points[3] = point4;
+        _points = new Vector3[]
+        {
+            point1,
+            point2,
+            point3,
+            point4
+        };
+
+        _indices = new uint[] {
+            0, 1, 3,
+            1, 2, 3
+        };
 
         InitBuffers();
     }
 
     private void InitBuffers()
     {
-        // 1. Создаем и активируем VAO
+        // VAO
         VertexArrayObject = GL.GenVertexArray();
         GL.BindVertexArray(VertexArrayObject);
 
-        // 2. Создаем VBO
+        // VBO
         VertexBufferObject = GL.GenBuffer();
         GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferObject);
 
@@ -45,10 +66,10 @@ public class AFG2D  // automatic figure generation 2D
         GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 0, 0);
         GL.EnableVertexAttribArray(0);
 
-        // 3. Создаем и заполняем EBO
+        // EBO
         ElementBufferObject = GL.GenBuffer();
         GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementBufferObject);
-        GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
+        GL.BufferData(BufferTarget.ElementArrayBuffer, _indices.Length * sizeof(uint), _indices, BufferUsageHint.StaticDraw);
 
         // Отвязываем VAO
         GL.BindVertexArray(0);
@@ -57,7 +78,7 @@ public class AFG2D  // automatic figure generation 2D
     public void Draw()
     {
         GL.BindVertexArray(VertexArrayObject);
-        GL.DrawElements(PrimitiveType.Triangles, indices.Length, DrawElementsType.UnsignedInt, 0);
+        GL.DrawElements(PrimitiveType.Triangles, _indices.Length, DrawElementsType.UnsignedInt, 0);
     }
 
     public void Destroy()
