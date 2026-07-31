@@ -34,22 +34,17 @@ public class Game : GameWindow
         shader = new Shader("Shaders/shader.vert", "Shaders/shader.frag");
 
         GL.ClearColor(0.3f, 0.4f, 0.3f, 1.0f);
-        GL.Enable(EnableCap.DepthTest);
+        GL.Disable(EnableCap.DepthTest);
 
-        view = Matrix4.CreateTranslation(0.0f, 0.0f, -3.0f);
-        projection = Matrix4.CreatePerspectiveFieldOfView(
-            MathHelper.DegreesToRadians(45.0f),
-            (float)Size.X / Size.Y,
-            0.1f,
-            100.0f
-        );
+        view = Matrix4.Identity;
+        projection = Matrix4.CreateOrthographicOffCenter(0.0f, 800.0f, 0.0f, 600.0f, -1.0f, 1.0f);
         model = Matrix4.Identity;
 
         mySquare = new AFG2D(
-            new Vector3(0.5f, 0.5f, 0.0f),
-            new Vector3(0.5f, -0.5f, 0.0f),
-            new Vector3(-0.5f, -0.5f, 0.0f),
-            new Vector3(-0.5f, 0.5f, 0.0f)
+            new Vector3(100.0f, 100.0f, 0.0f),
+            new Vector3(100.0f, -100.0f, 0.0f),
+            new Vector3(-100.0f, -100.0f, 0.0f),
+            new Vector3(-100.0f, 100.0f, 0.0f)
         );
 
     }
@@ -60,11 +55,12 @@ public class Game : GameWindow
 
         _time += 100.0 * e.Time;
 
-        GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+        GL.Clear(ClearBufferMask.ColorBufferBit);
 
         shader.Use();
 
-        model = Matrix4.Identity * Matrix4.CreateRotationX((float)MathHelper.DegreesToRadians(_time));
+        model = Matrix4.CreateRotationZ((float)MathHelper.DegreesToRadians(_time))
+              * Matrix4.CreateTranslation(400.0f, 300.0f, 0.0f);
 
         shader.SetMatrix4("model", model);
         shader.SetMatrix4("view", view);
