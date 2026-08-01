@@ -7,9 +7,9 @@ using System;
 public class Game : GameWindow
 {
     private Shader shader;
-    private AFG2D _figure;
     private camera2D _camera;
     private ScreenSystem2D _screen;
+    private MeshFilter2D _figureMesh;
 
     private Matrix4 view;
     private Matrix4 projection;
@@ -37,11 +37,11 @@ public class Game : GameWindow
         GL.ClearColor(0.3f, 0.4f, 0.3f, 1.0f);
         GL.Disable(EnableCap.DepthTest);
 
-        _figure = new AFG2D(
-            new Vector3(100.0f, 100.0f, 0.0f),
-            new Vector3(100.0f, -100.0f, 0.0f),
-            new Vector3(-100.0f, -100.0f, 0.0f),
-            new Vector3(-100.0f, 100.0f, 0.0f)
+        _figureMesh = AFG2D.CreateQuadMesh(
+        new Vector3(100.0f, 100.0f, 0.0f),
+        new Vector3(100.0f, -100.0f, 0.0f),
+        new Vector3(-100.0f, -100.0f, 0.0f),
+        new Vector3(-100.0f, 100.0f, 0.0f)
         );
         _camera = new camera2D();
         _screen = new ScreenSystem2D(Size.X, Size.Y);
@@ -72,8 +72,9 @@ public class Game : GameWindow
         shader.SetMatrix4("model", model);
         shader.SetMatrix4("view", _camera.GetViewMatrix());
         shader.SetMatrix4("projection", _screen.GetProjectionMatrix());
-        
-        _figure.Draw();
+
+        GL.BindVertexArray(_figureMesh.VaoHandle);
+        GL.DrawElements(PrimitiveType.Triangles, _figureMesh.IndexCount, DrawElementsType.UnsignedInt, 0);
 
         SwapBuffers();
     }
@@ -93,8 +94,7 @@ public class Game : GameWindow
     {
         base.OnUnload();
 
-        _figure.Destroy();
-
+        _figureMesh.CleanUp();
         shader.Dispose();
     }
 }
