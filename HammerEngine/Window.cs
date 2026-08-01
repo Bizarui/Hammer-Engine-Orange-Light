@@ -8,6 +8,7 @@ public class Game : GameWindow
 {
     private Shader shader;
     private AFG2D mySquare;
+    private camera2D _camera;
 
     private Matrix4 view;
     private Matrix4 projection;
@@ -36,6 +37,8 @@ public class Game : GameWindow
         GL.ClearColor(0.3f, 0.4f, 0.3f, 1.0f);
         GL.Disable(EnableCap.DepthTest);
 
+        _camera = new camera2D();
+
         view = Matrix4.Identity;
         projection = Matrix4.CreateOrthographicOffCenter(0.0f, 800.0f, 0.0f, 600.0f, -1.0f, 1.0f);
         model = Matrix4.Identity;
@@ -47,6 +50,14 @@ public class Game : GameWindow
             new Vector3(-100.0f, 100.0f, 0.0f)
         );
 
+    }
+
+    protected override void OnUpdateFrame(FrameEventArgs e)
+    {
+        base.OnUpdateFrame(e);
+
+        // Передаем в камеру управление, состояние фокуса окна и время кадра
+        _camera.Control(KeyboardState, IsFocused, (float)e.Time);
     }
 
     protected override void OnRenderFrame(FrameEventArgs e)
@@ -63,7 +74,7 @@ public class Game : GameWindow
               * Matrix4.CreateTranslation(400.0f, 300.0f, 0.0f);
 
         shader.SetMatrix4("model", model);
-        shader.SetMatrix4("view", view);
+        shader.SetMatrix4("view", _camera.GetViewMatrix());
         shader.SetMatrix4("projection", projection);
 
         mySquare.Draw();
