@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-public class MeshFilter2D
+﻿public class MeshFilter2D
 {
     public int VaoHandle { get; private set; }
     public int VboHandle { get; private set; }

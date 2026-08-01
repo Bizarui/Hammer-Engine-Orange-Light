@@ -2,14 +2,15 @@
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Mathematics;
-using System;
 
 public class Game : GameWindow
 {
     private Shader shader;
     private camera2D _camera;
     private ScreenSystem2D _screen;
+    
     private MeshFilter2D _figureMesh;
+    private SpriteRenderer2D _figureRenderer;
 
     private Matrix4 view;
     private Matrix4 projection;
@@ -37,14 +38,16 @@ public class Game : GameWindow
         GL.ClearColor(0.3f, 0.4f, 0.3f, 1.0f);
         GL.Disable(EnableCap.DepthTest);
 
+        _camera = new camera2D();
+        _screen = new ScreenSystem2D(Size.X, Size.Y);
+
         _figureMesh = AFG2D.CreateQuadMesh(
         new Vector3(100.0f, 100.0f, 0.0f),
         new Vector3(100.0f, -100.0f, 0.0f),
         new Vector3(-100.0f, -100.0f, 0.0f),
         new Vector3(-100.0f, 100.0f, 0.0f)
         );
-        _camera = new camera2D();
-        _screen = new ScreenSystem2D(Size.X, Size.Y);
+        _figureRenderer = new SpriteRenderer2D(Color4.White);
     }
 
     protected override void OnUpdateFrame(FrameEventArgs e)
@@ -72,7 +75,8 @@ public class Game : GameWindow
         shader.SetMatrix4("model", model);
         shader.SetMatrix4("view", _camera.GetViewMatrix());
         shader.SetMatrix4("projection", _screen.GetProjectionMatrix());
-
+        shader.SetVector4("objectColor", new Vector4(_figureRenderer.Color.R, _figureRenderer.Color.G, _figureRenderer.Color.B, _figureRenderer.Color.A));
+        
         GL.BindVertexArray(_figureMesh.VaoHandle);
         GL.DrawElements(PrimitiveType.Triangles, _figureMesh.IndexCount, DrawElementsType.UnsignedInt, 0);
 
