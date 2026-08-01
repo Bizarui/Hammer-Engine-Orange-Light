@@ -7,7 +7,7 @@ using System;
 public class Game : GameWindow
 {
     private Shader shader;
-    private AFG2D mySquare;
+    private AFG2D _figure;
     private camera2D _camera;
 
     private Matrix4 view;
@@ -43,7 +43,7 @@ public class Game : GameWindow
         projection = Matrix4.CreateOrthographicOffCenter(0.0f, 800.0f, 0.0f, 600.0f, -1.0f, 1.0f);
         model = Matrix4.Identity;
 
-        mySquare = new AFG2D(
+        _figure = new AFG2D(
             new Vector3(100.0f, 100.0f, 0.0f),
             new Vector3(100.0f, -100.0f, 0.0f),
             new Vector3(-100.0f, -100.0f, 0.0f),
@@ -56,8 +56,9 @@ public class Game : GameWindow
     {
         base.OnUpdateFrame(e);
 
-        // Передаем в камеру управление, состояние фокуса окна и время кадра
         _camera.Control(KeyboardState, IsFocused, (float)e.Time);
+
+        _camera.Zoom(MouseState);
     }
 
     protected override void OnRenderFrame(FrameEventArgs e)
@@ -77,7 +78,7 @@ public class Game : GameWindow
         shader.SetMatrix4("view", _camera.GetViewMatrix());
         shader.SetMatrix4("projection", projection);
 
-        mySquare.Draw();
+        _figure.Draw();
 
         SwapBuffers();
     }
@@ -86,7 +87,7 @@ public class Game : GameWindow
     {
         base.OnUnload();
 
-        mySquare.Destroy();
+        _figure.Destroy();
 
         shader.Dispose();
     }
