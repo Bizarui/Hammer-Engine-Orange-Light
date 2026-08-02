@@ -5,42 +5,36 @@ using OpenTK.Mathematics;
 
 public class Game : GameWindow
 {
-    private Shader shader;
-    private camera2D _camera;
     private ScreenSystem2D _screen;
-    
+    private RenderSystem2D _renderSystem;
+    private Transform2D _figureTransform;
+    private camera2D _camera;
     private MeshFilter2D _figureMesh;
     private SpriteRenderer2D _figureRenderer;
-
-    private Matrix4 view;
-    private Matrix4 projection;
-    private Matrix4 model;
-
-    private double _time;
 
     public Game(int width, int height, string title)
         : base(GameWindowSettings.Default, new NativeWindowSettings()
         {
             Size = (width, height),
-
             Title = title
         })
     {
     }
 
-
     protected override void OnLoad()
     {
         base.OnLoad();
 
-        shader = new Shader("Shaders/shader.vert", "Shaders/shader.frag");
+        _renderSystem = new RenderSystem2D("Shaders/shader.vert", "Shaders/shader.frag");
+
 
         GL.ClearColor(0.3f, 0.4f, 0.3f, 1.0f);
         GL.Disable(EnableCap.DepthTest);
 
         _camera = new camera2D();
         _screen = new ScreenSystem2D(Size.X, Size.Y);
-
+        _figureTransform = new Transform2D();
+        _figureTransform.Position = new Vector2(400.0f, 300.0f);
         _figureMesh = AFG2D.CreateQuadMesh(
         new Vector3(100.0f, 100.0f, 0.0f),
         new Vector3(100.0f, -100.0f, 0.0f),
@@ -56,32 +50,20 @@ public class Game : GameWindow
 
         _camera.Control(KeyboardState, IsFocused, (float)e.Time);
         _camera.Zoom(MouseState);
+        _figureTransform.Rotation += 45.0f * (float)e.Time;
     }
 
     protected override void OnRenderFrame(FrameEventArgs e)
     {
         base.OnRenderFrame(e);
-
         GL.Clear(ClearBufferMask.ColorBufferBit);
 
-        shader.Use();
-        
-        _time += 100.0 * e.Time;
-        
-        Vector2 center = _screen.GetCenter();
-        model = Matrix4.CreateRotationZ((float)MathHelper.DegreesToRadians(_time))
-              * Matrix4.CreateTranslation(center.X, center.Y, 0.0f);
-
-        shader.SetMatrix4("model", model);
-        shader.SetMatrix4("view", _camera.GetViewMatrix());
-        shader.SetMatrix4("projection", _screen.GetProjectionMatrix());
-        shader.SetVector4("objectColor", new Vector4(_figureRenderer.Color.R, _figureRenderer.Color.G, _figureRenderer.Color.B, _figureRenderer.Color.A));
-        
-        GL.BindVertexArray(_figureMesh.VaoHandle);
-        GL.DrawElements(PrimitiveType.Triangles, _figureMesh.IndexCount, DrawElementsType.UnsignedInt, 0);
+        _renderSystem.BeginFrame(_camera.GetViewMatrix(), _screen.GetProjectionMatrix());
+        _renderSystem.DrawMesh(_figureMesh, _figureTransform, _figureRenderer);
 
         SwapBuffers();
     }
+
 
     protected override void OnResize(ResizeEventArgs e)
     {
@@ -99,6 +81,6 @@ public class Game : GameWindow
         base.OnUnload();
 
         _figureMesh.Destroy();
-        shader.Dispose();
+        _renderSystem.Dispose();
     }
 }
