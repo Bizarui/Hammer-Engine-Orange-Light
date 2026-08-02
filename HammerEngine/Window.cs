@@ -98,7 +98,7 @@ public class Game : GameWindow
     {
         base.OnUnload();
 
-        _figureMesh.CleanUp();
+        _figureMesh.Destroy();
         shader.Dispose();
     }
 }

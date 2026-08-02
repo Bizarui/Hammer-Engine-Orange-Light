@@ -2,7 +2,7 @@
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
-public class camera2D
+public class camera2D : GameObject
 {
     public Vector2 Position = new Vector2(0.0f, 0.0f);
 
@@ -51,5 +51,9 @@ public class camera2D
         }
 
 
+    }
+
+    public override void Destroy()
+    {
     }
 }

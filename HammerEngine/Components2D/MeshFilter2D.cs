@@ -1,4 +1,4 @@
-﻿public class MeshFilter2D
+﻿public class MeshFilter2D : GameObject
 {
     public int VaoHandle { get; private set; }
     public int VboHandle { get; private set; }
@@ -14,7 +14,7 @@
         IndexCount = indexCount;
     }
 
-    public void CleanUp()
+    public override void Destroy()
     {
         OpenTK.Graphics.OpenGL4.GL.DeleteVertexArray(VaoHandle);
         OpenTK.Graphics.OpenGL4.GL.DeleteBuffer(VboHandle);
