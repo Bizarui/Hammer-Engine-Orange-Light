@@ -7,3 +7,11 @@ Hemmer Engine: Orange Light is an open-source project. The engine is written in 
 If you want to stay updated on our progress and follow the development, feel free to join our social media channels:
 
 [Discord](https://discord.gg/cNCNHAgYnM)
+
+## Developers
+
+- [Bizarui](https://github.com/Bizarui)
+- [kevin7496](https://github.com/kevin7496)
+
+## License
+[LICENSE](./LICENSE)
