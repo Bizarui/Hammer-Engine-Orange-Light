@@ -1,4 +1,5 @@
-﻿using OpenTK.Mathematics;
+﻿using HammerEngine;
+using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
 public class Camera2D : Component
@@ -14,23 +15,23 @@ public class Camera2D : Component
              * Matrix4.CreateScale(ZoomScale, ZoomScale, 1.0f);
     }
 
-    public virtual void Update(float deltaTime)
+    public override void Update()
     {
         if (Input.Keyboard.IsKeyDown(Keys.A))
         {
-            Position.X -= Speed * deltaTime; // влево
+            Position.X -= Speed * Time.deltaTime; // влево
         }
         if (Input.Keyboard.IsKeyDown(Keys.D))
         {
-            Position.X += Speed * deltaTime; // вправо
+            Position.X += Speed * Time.deltaTime; // вправо
         }
         if (Input.Keyboard.IsKeyDown(Keys.W))
         {
-            Position.Y += Speed * deltaTime; // вверх
+            Position.Y += Speed * Time.deltaTime; // вверх
         }
         if (Input.Keyboard.IsKeyDown(Keys.S))
         {
-            Position.Y -= Speed * deltaTime; // вниз
+            Position.Y -= Speed * Time.deltaTime; // вниз
         }
 
         Zoom(Input.Mouse);

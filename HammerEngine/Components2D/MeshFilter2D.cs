@@ -14,7 +14,7 @@
         IndexCount = indexCount;
     }
 
-    public override void OnDestroy()
+    public override void Destroy()
     {
         OpenTK.Graphics.OpenGL4.GL.DeleteVertexArray(VaoHandle);
         OpenTK.Graphics.OpenGL4.GL.DeleteBuffer(VboHandle);

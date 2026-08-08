@@ -2,6 +2,7 @@
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Mathematics;
+using HammerEngine;
 
 public class Game : GameWindow
 {
@@ -49,8 +50,11 @@ public class Game : GameWindow
         
         Input.Keyboard = KeyboardState;
         Input.Mouse = MouseState;
+
+        Time.deltaTime = (float)e.Time;
         
-        _camera.Update((float)e.Time);
+        _camera.Update();
+        
         _figureTransform.Rotation += 45.0f * (float)e.Time;
     }
 
@@ -81,7 +85,7 @@ public class Game : GameWindow
     {
         base.OnUnload();
 
-        _figureMesh.OnDestroy();
+        _figureMesh.Destroy();
         _renderSystem.Dispose();
     }
 }
