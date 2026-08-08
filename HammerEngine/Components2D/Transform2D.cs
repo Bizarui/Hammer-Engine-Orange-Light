@@ -1,6 +1,6 @@
 ﻿using OpenTK.Mathematics;
 
-public class Transform2D
+public class Transform2D : Component
 {
     public Vector2 Position { get; set; } = new Vector2(100.0f, 100.0f);
     public float Rotation { get; set; } = 0.0f;

@@ -1,8 +1,7 @@
 ﻿using OpenTK.Mathematics;
-using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
-public class camera2D : GameObject
+public class Camera2D : Component
 {
     public Vector2 Position = new Vector2(0.0f, 0.0f);
 
@@ -15,45 +14,41 @@ public class camera2D : GameObject
              * Matrix4.CreateScale(ZoomScale, ZoomScale, 1.0f);
     }
 
-    public void Control(KeyboardState input, bool isFocused, float deltaTime)
+    public virtual void Update(float deltaTime)
     {
-        if (!isFocused) return;
-
-        if (input.IsKeyDown(Keys.A))
+        if (Input.Keyboard.IsKeyDown(Keys.A))
         {
             Position.X -= Speed * deltaTime; // влево
         }
-        if (input.IsKeyDown(Keys.D))
+        if (Input.Keyboard.IsKeyDown(Keys.D))
         {
             Position.X += Speed * deltaTime; // вправо
         }
-        if (input.IsKeyDown(Keys.W))
+        if (Input.Keyboard.IsKeyDown(Keys.W))
         {
             Position.Y += Speed * deltaTime; // вверх
         }
-        if (input.IsKeyDown(Keys.S))
+        if (Input.Keyboard.IsKeyDown(Keys.S))
         {
             Position.Y -= Speed * deltaTime; // вниз
         }
+
+        Zoom(Input.Mouse);
     }
 
-    public void Zoom(MouseState mouse)
+    private void Zoom(MouseState mouse)
     {
         float scroll = mouse.ScrollDelta.Y;
 
         if (scroll > 0.0f)
         {
-            ZoomScale += 0.1f; // Приближаем
+            ZoomScale += 0.1f;
         }
         else if (scroll < 0.0f)
         {
-            ZoomScale -= 0.1f; // Отдаляем
+            ZoomScale -= 0.1f;
         }
 
-
-    }
-
-    public override void Destroy()
-    {
+        if (ZoomScale < 0.1f) ZoomScale = 0.1f;
     }
 }

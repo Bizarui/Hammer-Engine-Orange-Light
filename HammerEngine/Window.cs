@@ -8,7 +8,7 @@ public class Game : GameWindow
     private ScreenSystem2D _screen;
     private RenderSystem2D _renderSystem;
     private Transform2D _figureTransform;
-    private camera2D _camera;
+    private Camera2D _camera;
     private MeshFilter2D _figureMesh;
     private SpriteRenderer2D _figureRenderer;
 
@@ -27,11 +27,10 @@ public class Game : GameWindow
 
         _renderSystem = new RenderSystem2D("Shaders/shader.vert", "Shaders/shader.frag");
 
-
         GL.ClearColor(0.3f, 0.4f, 0.3f, 1.0f);
         GL.Disable(EnableCap.DepthTest);
 
-        _camera = new camera2D();
+        _camera = new Camera2D();
         _screen = new ScreenSystem2D(Size.X, Size.Y);
         _figureTransform = new Transform2D();
         _figureTransform.Position = new Vector2(400.0f, 300.0f);
@@ -47,9 +46,11 @@ public class Game : GameWindow
     protected override void OnUpdateFrame(FrameEventArgs e)
     {
         base.OnUpdateFrame(e);
-
-        _camera.Control(KeyboardState, IsFocused, (float)e.Time);
-        _camera.Zoom(MouseState);
+        
+        Input.Keyboard = KeyboardState;
+        Input.Mouse = MouseState;
+        
+        _camera.Update((float)e.Time);
         _figureTransform.Rotation += 45.0f * (float)e.Time;
     }
 
@@ -80,7 +81,7 @@ public class Game : GameWindow
     {
         base.OnUnload();
 
-        _figureMesh.Destroy();
+        _figureMesh.OnDestroy();
         _renderSystem.Dispose();
     }
 }

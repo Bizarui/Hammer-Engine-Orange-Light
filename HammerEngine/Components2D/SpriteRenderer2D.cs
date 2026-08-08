@@ -1,6 +1,6 @@
 ﻿using OpenTK.Mathematics;
 
-public class SpriteRenderer2D
+public class SpriteRenderer2D : Component
 {
     public Color4 Color { get; set; } = Color4.White;
 
