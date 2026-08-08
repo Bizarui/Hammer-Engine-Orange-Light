@@ -14,4 +14,4 @@ If you want to stay updated on our progress and follow the development, feel fre
 - [kevin7496](https://github.com/kevin7496)
 
 ## License
-The project is distributed under the permissive [**MIT License**](./LICENSE)
+The project is distributed under the permissive [**MIT License**](./LICENSE.txt)
