@@ -2,13 +2,21 @@
 
 public class GameObject
 {
-    public string Name { get; set; }
+    public string Name { get; set; } = "";
 
+    public Transform transform { get; set; }
+
+    internal IReadOnlyCollection<Component> Components => _components.AsReadOnly();
     private List<Component> _components = new List<Component>();
 
     public GameObject(string name)
     {
         Name = name;
+    }
+
+    public GameObject()
+    {
+        transform = AddComponent<Transform>();
     }
 
     public Component? GetComponent<T>() where T : notnull, Component
@@ -30,7 +38,7 @@ public class GameObject
         return true;
     }
 
-    public Component AddComponent<T>() where T : notnull, Component, new()
+    public T AddComponent<T>() where T : notnull, Component, new()
     {
         if (TryGetComponent<T>(out var component1))
             return component1;
@@ -41,7 +49,7 @@ public class GameObject
         _components.Add(component);
         component.Awake();
 
-        return component;
+        return component as T;
     }
 
     public Component AddComponent(Type type)
@@ -79,7 +87,7 @@ public class GameObject
 
     public void RemoveComponent<T>() where T : notnull, Component
     {
-        _components.RemoveAll(c => c is T);
+        _components.RemoveAll(c => c is T && c is not Transform);
     }
 
     public void Destroy()
