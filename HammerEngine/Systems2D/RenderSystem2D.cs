@@ -17,7 +17,7 @@ public class RenderSystem2D
         MainShader.SetMatrix4("projection", projectionMatrix);
     }
 
-    public void DrawMesh(MeshFilter2D mesh, Transform2D transform, SpriteRenderer2D renderer)
+    public void DrawMesh(MeshFilter2D mesh, Transform transform, SpriteRenderer2D renderer)
     {
         MainShader.SetMatrix4("model", transform.GetModelMatrix());
 

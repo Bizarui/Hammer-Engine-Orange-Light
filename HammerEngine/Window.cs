@@ -8,7 +8,7 @@ public class Game : GameWindow
 {
     private ScreenSystem2D _screen;
     private RenderSystem2D _renderSystem;
-    private Transform2D _figureTransform;
+    private Transform _figureTransform;
     private Camera2D _camera;
     private MeshFilter2D _figureMesh;
     private SpriteRenderer2D _figureRenderer;
@@ -33,7 +33,7 @@ public class Game : GameWindow
 
         _camera = new Camera2D();
         _screen = new ScreenSystem2D(Size.X, Size.Y);
-        _figureTransform = new Transform2D();
+        _figureTransform = new Transform();
         _figureTransform.Position = new Vector2(400.0f, 300.0f);
         _figureMesh = AFG2D.CreateQuadMesh(
         new Vector3(100.0f, 100.0f, 0.0f),
@@ -52,10 +52,10 @@ public class Game : GameWindow
         Input.Mouse = MouseState;
 
         Time.deltaTime = (float)e.Time;
-        
+
         _camera.Update();
-        
-        _figureTransform.Rotation += 45.0f * (float)e.Time;
+
+        SceneManager.InvokeUpdateComponents();
     }
 
     protected override void OnRenderFrame(FrameEventArgs e)

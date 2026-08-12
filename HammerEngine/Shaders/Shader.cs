@@ -3,6 +3,8 @@ using OpenTK.Mathematics;
 
 public class Shader
 {
+    public readonly static Shader Defualt = new Shader("Shaders/shader.vert", "Shaders/shader.frag");
+
     public int Handle;
     int VertexShader;
     int FragmentShader;
