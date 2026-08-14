@@ -1,17 +1,14 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
-using OpenTK.Mathematics;
 using HammerEngine;
 
 public class Game : GameWindow
 {
+    private Scene _mainScene;
+
     private ScreenSystem2D _screen;
     private RenderSystem2D _renderSystem;
-    private Transform _figureTransform;
-    private Camera2D _camera;
-    private MeshFilter2D _figureMesh;
-    private SpriteRenderer2D _figureRenderer;
 
     public Game(int width, int height, string title)
         : base(GameWindowSettings.Default, new NativeWindowSettings()
@@ -31,17 +28,17 @@ public class Game : GameWindow
         GL.ClearColor(0.3f, 0.4f, 0.3f, 1.0f);
         GL.Disable(EnableCap.DepthTest);
 
-        _camera = new Camera2D();
-        _screen = new ScreenSystem2D(Size.X, Size.Y);
-        _figureTransform = new Transform();
-        _figureTransform.Position = new Vector2(400.0f, 300.0f);
-        _figureMesh = AFG2D.CreateQuadMesh(
-        new Vector3(100.0f, 100.0f, 0.0f),
-        new Vector3(100.0f, -100.0f, 0.0f),
-        new Vector3(-100.0f, -100.0f, 0.0f),
-        new Vector3(-100.0f, 100.0f, 0.0f)
-        );
-        _figureRenderer = new SpriteRenderer2D(Color4.White);
+        _mainScene = SceneManager.CreateScene();
+        
+        SceneManager.LoadScene(0);
+
+        GameObject Object1 = new GameObject();
+        Object1.Name = "Triangle";
+
+        Object1.transform.Position = new OpenTK.Mathematics.Vector2(400f, 300f);
+        Object1.transform.Scale = new OpenTK.Mathematics.Vector2(50f, 50f);
+
+        _mainScene.AddObject(Object1);
     }
 
     protected override void OnUpdateFrame(FrameEventArgs e)
@@ -53,8 +50,6 @@ public class Game : GameWindow
 
         Time.deltaTime = (float)e.Time;
 
-        _camera.Update();
-
         SceneManager.InvokeUpdateComponents();
     }
 
@@ -63,8 +58,7 @@ public class Game : GameWindow
         base.OnRenderFrame(e);
         GL.Clear(ClearBufferMask.ColorBufferBit);
 
-        _renderSystem.BeginFrame(_camera.GetViewMatrix(), _screen.GetProjectionMatrix());
-        _renderSystem.DrawMesh(_figureMesh, _figureTransform, _figureRenderer);
+        SceneManager.InvokeRenderComponents();
 
         SwapBuffers();
     }
@@ -85,7 +79,6 @@ public class Game : GameWindow
     {
         base.OnUnload();
 
-        _figureMesh.Destroy();
         _renderSystem.Dispose();
     }
 }
