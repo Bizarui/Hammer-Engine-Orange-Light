@@ -9,7 +9,7 @@ public class GameObject
     internal IReadOnlyCollection<Component> Components => _components.AsReadOnly();
     private List<Component> _components = new List<Component>();
 
-    public GameObject(string name)
+    public GameObject(string name) : this()
     {
         Name = name;
     }
