@@ -33,10 +33,9 @@ namespace HammerEngine.Components2D
             GL.BindVertexArray(0);
         }
 
-        internal void Draw()
+        public override void Render()
         {
             Shader.Use();
-
 
             GL.BindVertexArray(_vertexArrayObject);
             GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
