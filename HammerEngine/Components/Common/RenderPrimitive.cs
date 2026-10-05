@@ -1,6 +1,7 @@
-﻿using OpenTK.Graphics.OpenGL4;
+﻿using HammerEngine.Systems.Common;
+using OpenTK.Graphics.OpenGL4;
 
-namespace HammerEngine.Components2D
+namespace HammerEngine.Components.Common
 {
     public class RenderPrimitive : Component
     {

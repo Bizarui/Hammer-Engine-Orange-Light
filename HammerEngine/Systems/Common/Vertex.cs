@@ -1,6 +1,6 @@
 ﻿using OpenTK.Mathematics;
 
-namespace HammerEngine
+namespace HammerEngine.Systems.Common
 {
     public struct Vertex
     {

@@ -22,4 +22,9 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Components\3D\" />
+    <Folder Include="Systems\3D\" />
+  </ItemGroup>
+
 </Project>

@@ -1,4 +1,4 @@
-﻿namespace HammerEngine
+﻿namespace HammerEngine.Systems.Common
 {
     public static class SceneManager
     {
